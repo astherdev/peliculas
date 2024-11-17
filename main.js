@@ -20,9 +20,12 @@ buscador.addEventListener('keydown', (event) => {
 
 
 buttonSearch.addEventListener('click', () => {
-    const textoBuscado = buscador.value.toUpperCase();
+    const textoBuscado = buscador.value.trim().toUpperCase(); 
 
-    if (textoBuscado === "") return; 
+    if (textoBuscado === "") {
+        resultado.innerHTML = "<li>Por favor, ingresa un texto para buscar</li>";
+        return;
+    }
 
     fetch(select)
         .then(response => {
@@ -34,12 +37,11 @@ buttonSearch.addEventListener('click', () => {
         .then((datos) => {
             resultado.innerHTML = "";
 
-
             const items = datos.data || [];
 
-
-            const coincidencias = items.filter(item => item.nombre.toUpperCase().startsWith(textoBuscado));
-
+            const coincidencias = items.filter(item =>
+                item.nombre.trim().toUpperCase().startsWith(textoBuscado)
+            );
 
             if (coincidencias.length > 0) {
                 coincidencias.forEach(item => {
@@ -62,7 +64,7 @@ buttonSearch.addEventListener('click', () => {
                     resultado.appendChild(li);
                 });
             } else {
-                resultado.innerHTML = "<li>No se encontraron coincidencias</li>";
+                resultado.innerHTML = "<li>Vaya.. no se encontro ningún resultado ;(</li>";
             }
         })
         .catch(error => console.error('Error al cargar el archivo:', error));
